@@ -1,10 +1,10 @@
+import { Link, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
 import Navbar from "../ui/Navbar";
 import { Rating } from "react-simple-star-rating";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
 
 const Recipe = () => {
   const { recipeId } = useParams();
@@ -157,7 +157,7 @@ const Recipe = () => {
               <div className="text-zinc-300">Rating : {getOverallRating()}/5</div>
             </div>
             <span className="text-lg font-semibold text-zinc-400">
-              Author : {recipe.createdBy}
+              <Link to={`/profile/${recipe.userId}`}>Author : {recipe.createdBy}</Link>
             </span>
           </div>
 
@@ -202,7 +202,7 @@ const Recipe = () => {
                 <div key={index} className="mb-4 p-4 rounded-lg bg-zinc-900">
                   <div className="flex justify-between items-center border-b pb-2 border-zinc-700">
                     <span className="text-md font-bold text-orange-500">
-                      {review.user.name}
+                      <Link to={`/profile/${review.user.id}`}>{review.user.name}</Link>
                     </span>
                     <div className="">
                       <Rating

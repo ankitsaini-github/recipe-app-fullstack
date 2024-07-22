@@ -34,7 +34,7 @@ const App = () => {
             <>
               {isAdmin && <Route path="/admin" component={AdminDashboard} />}
               <Route path="/home" component={Home} />
-              <Route path="/myprofile" component={MyProfile} />
+              <Route path="/profile/:profileId" component={MyProfile} />
               <Route path="/favourites" component={Favourites} />
               <Route path="/recipe/:recipeId" component={Recipe} />
             </>

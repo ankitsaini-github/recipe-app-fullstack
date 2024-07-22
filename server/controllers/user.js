@@ -128,9 +128,9 @@ exports.deleteProfile = async (req, res) => {
 };
 
 exports.getProfile = async (req, res) => {
-
+  const {profileId} = req.query;
   try {
-    const user = await Users.findOne({ where: { id: req.user.id } });
+    const user = await Users.findOne({ where: { id: profileId } });
     
     res.status(200).json({
       success: true,
@@ -143,7 +143,7 @@ exports.getProfile = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(err);
+    console.error(error);
     res.status(500).json({ error: "Failed to fetch user profile." });
   }
 };

@@ -95,7 +95,7 @@ const RecipeList = ({ list, onDelete, card, onEdit }) => {
                 </div>
                 <div className="flex justify-between mt-2 items-center">
                   <span className="text-md text-zinc-500">
-                    Author : {recipe.createdBy}
+                    <Link to={`/profile/${recipe.userId}`}>Author : {recipe.createdBy}</Link>
                   </span>
                   <span>
                     {onEdit && (

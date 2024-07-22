@@ -4,7 +4,10 @@ import RecipeList from "./RecipeList";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const MyRecipes = () => {
+const MyRecipes = ({profileId}) => {
+  const userId = localStorage.getItem("userId");
+  const myAccount = userId === profileId?true:false;
+
   const [recipes, setRecipes] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -20,12 +23,11 @@ const MyRecipes = () => {
 
   useEffect(() => {
     const fetchRecipes = async () => {
-      const userId = localStorage.getItem("userId");
       const token = localStorage.getItem("token");
 
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_SERVER_IP}/recipe?userId=${userId}`,
+          `${import.meta.env.VITE_SERVER_IP}/recipe?userId=${profileId}`,
           {
             headers: {
               Authorization: token,
@@ -45,7 +47,7 @@ const MyRecipes = () => {
     };
 
     fetchRecipes();
-  }, []);
+  }, [profileId]);
 
   const handleAddRecipeClick = () => {
     setIsAdding(true);
@@ -190,130 +192,134 @@ const MyRecipes = () => {
   return (
     <div className="bg-zinc-800 rounded-lg shadow container p-4 flex flex-col">
       <div className="pb-5 mb-5 border-b border-zinc-500 flex justify-between">
-        <h3 className="text-orange-500 font-bold text-2xl">My Recipes</h3>
-        <button
+        <h3 className="text-orange-500 font-bold text-2xl">{myAccount?'My Recipes':'Recipes'}</h3>
+        {myAccount && <button
           onClick={handleAddRecipeClick}
           className="text-white bg-orange-600 hover:bg-orange-700 focus:ring-2 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-lg px-5 py-1"
         >
           Add Recipe
-        </button>
+        </button>}
       </div>
 
-      {isAdding || isEditing ? (
-        <form className="mb-5" onSubmit={handleSaveRecipe}>
-          <div className="mb-4">
-            <label className="block text-white mb-2" htmlFor="title">
-              Recipe Title
-            </label>
-            <input
-              type="text"
-              name="title"
-              id="title"
-              value={newRecipe.title}
-              onChange={handleInputChange}
-              className="w-full p-2 border border-zinc-600 rounded-lg bg-zinc-700 text-white"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-white mb-2" htmlFor="imageUrl">
-              Image URL
-            </label>
-            <input
-              type="url"
-              name="imageUrl"
-              id="imageUrl"
-              value={newRecipe.imageUrl}
-              onChange={handleInputChange}
-              className="w-full p-2 border border-zinc-600 rounded-lg bg-zinc-700 text-white"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-white mb-2" htmlFor="details">
-              Details
-            </label>
-            <textarea
-              name="details"
-              id="details"
-              value={newRecipe.details}
-              onChange={handleInputChange}
-              className="w-full p-2 border border-zinc-600 rounded-lg bg-zinc-700 text-white"
-              required
-            ></textarea>
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-white mb-2" htmlFor="tags">
-              Tags (comma-separated)
-            </label>
-            <input
-              type="text"
-              name="tags"
-              id="tags"
-              value={newRecipe.tags}
-              onChange={handleInputChange}
-              className="w-full p-2 border border-zinc-600 rounded-lg bg-zinc-700 text-white"
-              placeholder="e.g., spicy, vegetarian"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-white mb-2" htmlFor="ingredients">
-              Ingredients (comma-separated)
-            </label>
-            <input
-              type="text"
-              name="ingredients"
-              id="ingredients"
-              value={newRecipe.ingredients}
-              onChange={handleInputChange}
-              className="w-full p-2 border border-zinc-600 rounded-lg bg-zinc-700 text-white"
-              placeholder="e.g., 200g flour, 100g sugar"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-white mb-2" htmlFor="instructions">
-              Instructions (comma-separated)
-            </label>
-            <textarea
-              name="instructions"
-              id="instructions"
-              value={newRecipe.instructions}
-              onChange={handleInputChange}
-              className="w-full p-2 border border-zinc-600 rounded-lg bg-zinc-700 text-white"
-              placeholder="e.g., Mix ingredients, Bake at 180°C for 20 minutes"
-              required
-            ></textarea>
-          </div>
-
-          <div className="flex justify-center gap-5">
-            <button
-              type="submit"
-              className="text-white bg-orange-600 hover:bg-orange-700 focus:ring-2 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-lg px-5 py-1"
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="text-white bg-gray-600 hover:bg-gray-700 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-lg px-5 py-1"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      ) : null}
-
+      {myAccount && <>
+        {isAdding || isEditing ? (
+          <form className="mb-5" onSubmit={handleSaveRecipe}>
+            <div className="mb-4">
+              <label className="block text-white mb-2" htmlFor="title">
+                Recipe Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                id="title"
+                value={newRecipe.title}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-zinc-600 rounded-lg bg-zinc-700 text-white"
+                required
+              />
+            </div>
+  
+            <div className="mb-4">
+              <label className="block text-white mb-2" htmlFor="imageUrl">
+                Image URL
+              </label>
+              <input
+                type="url"
+                name="imageUrl"
+                id="imageUrl"
+                value={newRecipe.imageUrl}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-zinc-600 rounded-lg bg-zinc-700 text-white"
+                required
+              />
+            </div>
+  
+            <div className="mb-4">
+              <label className="block text-white mb-2" htmlFor="details">
+                Details
+              </label>
+              <textarea
+                name="details"
+                id="details"
+                value={newRecipe.details}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-zinc-600 rounded-lg bg-zinc-700 text-white"
+                required
+              ></textarea>
+            </div>
+  
+            <div className="mb-4">
+              <label className="block text-white mb-2" htmlFor="tags">
+                Tags (comma-separated)
+              </label>
+              <input
+                type="text"
+                name="tags"
+                id="tags"
+                value={newRecipe.tags}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-zinc-600 rounded-lg bg-zinc-700 text-white"
+                placeholder="e.g., spicy, vegetarian"
+              />
+            </div>
+  
+            <div className="mb-4">
+              <label className="block text-white mb-2" htmlFor="ingredients">
+                Ingredients (comma-separated)
+              </label>
+              <input
+                type="text"
+                name="ingredients"
+                id="ingredients"
+                value={newRecipe.ingredients}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-zinc-600 rounded-lg bg-zinc-700 text-white"
+                placeholder="e.g., 200g flour, 100g sugar"
+                required
+              />
+            </div>
+  
+            <div className="mb-4">
+              <label className="block text-white mb-2" htmlFor="instructions">
+                Instructions (comma-separated)
+              </label>
+              <textarea
+                name="instructions"
+                id="instructions"
+                value={newRecipe.instructions}
+                onChange={handleInputChange}
+                className="w-full p-2 border border-zinc-600 rounded-lg bg-zinc-700 text-white"
+                placeholder="e.g., Mix ingredients, Bake at 180°C for 20 minutes"
+                required
+              ></textarea>
+            </div>
+  
+            <div className="flex justify-center gap-5">
+              <button
+                type="submit"
+                className="text-white bg-orange-600 hover:bg-orange-700 focus:ring-2 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-lg px-5 py-1"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="text-white bg-gray-600 hover:bg-gray-700 focus:ring-2 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-lg px-5 py-1"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        ) : null}
       <RecipeList
         list={recipes}
         onEdit={handleEditRecipeClick}
         onDelete={handleDeleteRecipe}
       />
+      </>}
+      {!myAccount&&<RecipeList
+        list={recipes}
+      />}
     </div>
   );
 };

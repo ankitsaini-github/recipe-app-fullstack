@@ -71,7 +71,7 @@ exports.getRecipeById = async (req, res) => {
           include: [
             {
               model: Users,
-              attributes: ["name"],
+              attributes: ["id","name"],
             },
           ],
         },
@@ -220,6 +220,7 @@ exports.addReview = async (req, res) => {
     const review = {
       ...result.toJSON(),
       user: {
+        id: req.user.id,
         name: req.user.name,
       },
     };

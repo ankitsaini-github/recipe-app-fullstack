@@ -4,8 +4,13 @@ import MyRecipes from "./MyRecipes";
 import Navbar from "../ui/Navbar";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
 const MyProfile = () => {
+  const { profileId } = useParams();
+  const userId = localStorage.getItem("userId");
+  const myAccount = userId === profileId?true:false;
+  
   const [userProfile, setUserProfile] = useState({
     userId:'',
     name:'',
@@ -19,7 +24,7 @@ const MyProfile = () => {
       const token = localStorage.getItem("token");
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_SERVER_IP}/user/profile`,
+          `${import.meta.env.VITE_SERVER_IP}/user/profile?profileId=${profileId}`,
           {
             headers: { Authorization: token },
           }
@@ -65,7 +70,7 @@ const MyProfile = () => {
       <div className="w-full h-full mt-8 flex flex-col items-center gap-5">
         <div className="bg-zinc-800 rounded-lg shadow container p-4 flex flex-col">
           <h3 className="text-orange-500 font-bold text-2xl pb-5 mb-5 border-b border-zinc-500">
-            My Profile
+            {myAccount?'My Profile':`${userProfile.name}'s Profile`}
           </h3>
           <form
             className="space-y-4 md:space-y-6 flex flex-col items-center"
@@ -129,7 +134,7 @@ const MyProfile = () => {
               />
             </div>
 
-            {!edit ? (
+            {myAccount && (!edit ? (
               <button
                 type="button"
                 className="w-full sm:w-1/5 text-white bg-orange-600 hover:bg-orange-700 focus:ring-2 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-lg px-5 py-1 text-center"
@@ -153,11 +158,11 @@ const MyProfile = () => {
                   Cancel
                 </button>
               </div>
-            )}
+            ))}
           </form>
         </div>
 
-        <MyRecipes/>
+        <MyRecipes profileId={profileId}/>
       </div>
     </>
   );
